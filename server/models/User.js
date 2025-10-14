@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Por favor ingrese una contraseña'],
     minlength: 6,
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 });
 
 // Middleware que se ejecuta ANTES de guardar un documento

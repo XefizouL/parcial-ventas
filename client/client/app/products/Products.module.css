@@ -1,88 +1,27 @@
 /* client/app/products/Products.module.css */
+.container { padding: 2rem; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.addButton { background-color: #28a745; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+.addButton:hover { background-color: #218838; }
+.productTable { width: 100%; border-collapse: collapse; }
+.productTable th, .productTable td { border: 1px solid #ddd; padding: 0.8rem; text-align: left; }
+.productTable th { background-color: #f2f2f2; }
+.productImage { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+.actionButton { padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; margin-right: 0.5rem; }
+.deleteButton { border-color: #dc3545; color: #dc3545; }
+.deleteButton:hover { background-color: #dc3545; color: white; }
 
-.container {
-  padding: 2rem;
+.header div { /* Estilo para el contenedor de botones */
+    display: flex;
+    gap: 1rem;
 }
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-/* 🔹 Contenedor para los dos botones */
-.header div {
-  display: flex;
-  gap: 1rem;
-}
-
-.addButton {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.addButton:hover {
-  background-color: #218838;
-}
-
-/* 🔹 Botón amarillo de sincronización */
 .syncButton {
-  background-color: #ffc107;
-  color: black;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
 }
-
-.syncButton:hover {
-  background-color: #e0a800;
-}
-
-.productTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.productTable th,
-.productTable td {
-  border: 1px solid #ddd;
-  padding: 0.8rem;
-  text-align: left;
-}
-
-.productTable th {
-  background-color: #f2f2f2;
-}
-
-.productImage {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 5px;
-}
-
-.actionButton {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 0.5rem;
-}
-
-.deleteButton {
-  border-color: #dc3545;
-  color: #dc3545;
-}
-
-.deleteButton:hover {
-  background-color: #dc3545;
-  color: white;
-}
+.syncButton:hover { background-color: #e0a800; }
