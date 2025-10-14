@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useContext } from 'react';
-import Link from 'next/link'; // ✅ Importamos Link para el enlace
+import Link from 'next/link'; // ✅ Importamos Link
 import AuthContext from '../../context/AuthContext';
 import styles from './Login.module.css'; // Archivo CSS para los estilos
 

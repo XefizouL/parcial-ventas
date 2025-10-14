@@ -36,7 +36,6 @@ exports.registerUser = async (req, res) => {
       email: user.email,
       token: generateToken(user._id),
     });
-
   } catch (error) {
     console.error('Error en registerUser:', error);
     res.status(500).json({ message: 'Error del servidor' });
@@ -86,27 +85,39 @@ exports.getProfile = async (req, res) => {
 // @desc    Solicitar reseteo de contraseña (Forgot Password)
 // @route   POST /api/auth/forgotpassword
 exports.forgotPassword = async (req, res) => {
+  let user; // ✅ Declaramos fuera del try
+
   try {
-    const user = await User.findOne({ email: req.body.email });
+    user = await User.findOne({ email: req.body.email });
+
+    // ✅ Respuesta genérica para evitar revelar si existe o no
     if (!user) {
-      return res.status(404).json({ message: 'No se encontró un usuario con ese correo' });
+      return res.status(200).json({
+        message: 'Si el correo está registrado, se enviará un enlace de reseteo.',
+      });
     }
 
-    // 1. Generar un token de reseteo
+    // 1️⃣ Generar token de reseteo
     const resetToken = crypto.randomBytes(20).toString('hex');
 
-    // 2. Hashear el token y guardarlo en la base de datos
-    user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Válido por 10 minutos
+    // 2️⃣ Hashear y guardar token temporalmente
+    user.resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutos
     await user.save();
 
-    // 3. Crear la URL de reseteo (usa la del frontend)
+    // 3️⃣ Crear URL de reseteo (frontend)
     const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
 
-    const message = `Has recibido este correo porque solicitaste un reseteo de contraseña. 
-Por favor, haz clic en el siguiente enlace para establecer una nueva contraseña:\n\n${resetUrl}\n\nSi no solicitaste esto, ignora este correo.`;
+    // 4️⃣ Contenido del correo
+    const message = `Has solicitado un reseteo de contraseña. 
+Haz clic en el siguiente enlace para establecer una nueva contraseña:
+${resetUrl}
+Si no solicitaste esto, puedes ignorar este mensaje.`;
 
-    // 4. Enviar el correo
+    // 5️⃣ Enviar correo
     await sendEmail({
       email: user.email,
       subject: 'Reseteo de Contraseña',
@@ -115,12 +126,15 @@ Por favor, haz clic en el siguiente enlace para establecer una nueva contraseña
 
     res.status(200).json({ message: 'Correo enviado' });
   } catch (error) {
-    console.error(error);
+    console.error('Error en forgotPassword:', error);
+
+    // ✅ Limpieza en caso de error
     if (user) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
     }
+
     res.status(500).json({ message: 'Error al enviar el correo' });
   }
 };
@@ -129,10 +143,13 @@ Por favor, haz clic en el siguiente enlace para establecer una nueva contraseña
 // @route   PUT /api/auth/resetpassword/:resettoken
 exports.resetPassword = async (req, res) => {
   try {
-    // 1. Hashear el token de la URL
-    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+    // 1️⃣ Hashear el token recibido
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(req.params.resettoken)
+      .digest('hex');
 
-    // 2. Buscar usuario válido
+    // 2️⃣ Buscar usuario con token válido
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
@@ -142,7 +159,7 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'El token es inválido o ha expirado' });
     }
 
-    // 3. Cambiar contraseña
+    // 3️⃣ Cambiar la contraseña
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
